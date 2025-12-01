@@ -1,48 +1,47 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { select } from "d3-selection"
-import { geoOrthographic, geoPath, geoGraticule, geoDistance, geoProjectionMutator } from "d3-geo"
-import "d3-transition" // Import d3-transition to extend selection with transition methods
-import { feature } from "topojson-client"
+import { useEffect, useRef, useState } from "react";
+import { select } from "d3-selection";
+import {
+  geoOrthographic,
+  geoPath,
+  geoGraticule,
+  geoDistance,
+  geoProjectionMutator,
+} from "d3-geo";
+import "d3-transition";
+import { feature } from "topojson-client";
+import type { FeatureCollection } from "geojson";
 
 interface GeoFeature {
-  type: string
-  geometry: any
-  properties: any
-}
-
-function interpolateProjection(raw0: any, raw1: any) {
-  const mutate: any = geoProjectionMutator((t: number) => (x: number, y: number) => {
-    const [x0, y0] = raw0(x, y)
-    const [x1, y1] = raw1(x, y)
-    return [x0 + t * (x1 - x0), y0 + t * (y1 - y0)]
-  })
-  let t = 0
-  return Object.assign((mutate as any)(t), {
-    alpha(_: number) {
-      return arguments.length ? (mutate as any)((t = +_)) : t
-    },
-  })
+  type: string;
+  geometry: any;
+  properties: any;
 }
 
 export function GlobeToMapTransform() {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [worldData, setWorldData] = useState<GeoFeature[]>([])
-  const [rotation, setRotation] = useState([0, -30])
-  const animationFrameRef = useRef<number>()
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [worldData, setWorldData] = useState<GeoFeature[]>([]);
+  const [rotation, setRotation] = useState([0, -30]);
+  const animationFrameRef = useRef<number>();
 
-  const width = 800
-  const height = 500
+  const width = 800;
+  const height = 500;
 
   // Load world data
   useEffect(() => {
     const loadWorldData = async () => {
       try {
-        const response = await fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
-        const world: any = await response.json()
-        const countries = feature(world, world.objects.countries).features
-        setWorldData(countries)
+        const response = await fetch(
+          "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
+        );
+        const world: any = await response.json();
+        const featureCollection = feature(
+          world,
+          world.objects.countries
+        ) as unknown as FeatureCollection;
+        const countries = featureCollection.features;
+        setWorldData(countries);
       } catch (error) {
         const fallbackData = [
           {
@@ -61,53 +60,53 @@ export function GlobeToMapTransform() {
             },
             properties: {},
           },
-        ]
-        setWorldData(fallbackData)
+        ];
+        setWorldData(fallbackData);
       }
-    }
+    };
 
-    loadWorldData()
-  }, [])
+    loadWorldData();
+  }, []);
 
   useEffect(() => {
     const animate = () => {
-      setRotation((prev) => [(prev[0] + 0.2) % 360, prev[1]])
-      animationFrameRef.current = requestAnimationFrame(animate)
-    }
+      setRotation((prev) => [(prev[0] + 0.2) % 360, prev[1]]);
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
 
-    animationFrameRef.current = requestAnimationFrame(animate)
+    animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const cities = [
     { name: "San Francisco", coords: [-122.4194, 37.7749] },
     { name: "Toronto", coords: [-79.3832, 43.6532] },
-  ]
+  ];
 
   // Initialize and update visualization
   useEffect(() => {
-    if (!svgRef.current || worldData.length === 0) return
+    if (!svgRef.current || worldData.length === 0) return;
 
-    const svg = select(svgRef.current)
-    svg.selectAll("*").remove()
+    const svg = select(svgRef.current);
+    svg.selectAll("*").remove();
 
     const projection = geoOrthographic()
       .scale(200)
       .translate([width / 2, height / 2])
       .rotate([rotation[0], rotation[1]])
-      .precision(0.1)
+      .precision(0.1);
 
-    const path = geoPath(projection)
+    const path = geoPath(projection);
 
     // Add graticule (grid lines)
     try {
-      const graticule = geoGraticule()
-      const graticulePath = path(graticule())
+      const graticule = geoGraticule();
+      const graticulePath = path(graticule());
       if (graticulePath) {
         svg
           .append("path")
@@ -116,7 +115,7 @@ export function GlobeToMapTransform() {
           .attr("fill", "none")
           .attr("stroke", "#404040")
           .attr("stroke-width", 0.5)
-          .attr("opacity", 0.15)
+          .attr("opacity", 0.15);
       }
     } catch (error) {
       // Silent error handling
@@ -131,14 +130,17 @@ export function GlobeToMapTransform() {
       .attr("class", "country")
       .attr("d", (d) => {
         try {
-          const pathString = path(d as any)
-          if (!pathString) return ""
-          if (typeof pathString === "string" && (pathString.includes("NaN") || pathString.includes("Infinity"))) {
-            return ""
+          const pathString = path(d as any);
+          if (!pathString) return "";
+          if (
+            typeof pathString === "string" &&
+            (pathString.includes("NaN") || pathString.includes("Infinity"))
+          ) {
+            return "";
           }
-          return pathString
+          return pathString;
         } catch (error) {
-          return ""
+          return "";
         }
       })
       .attr("fill", "#0a0a0a")
@@ -146,13 +148,15 @@ export function GlobeToMapTransform() {
       .attr("stroke-width", 0.8)
       .attr("opacity", 0.8)
       .style("visibility", function () {
-        const pathData = select(this).attr("d")
-        return pathData && pathData.length > 0 && !pathData.includes("NaN") ? "visible" : "hidden"
-      })
+        const pathData = select(this).attr("d");
+        return pathData && pathData.length > 0 && !pathData.includes("NaN")
+          ? "visible"
+          : "hidden";
+      });
 
     // Draw sphere outline
     try {
-      const sphereOutline = path({ type: "Sphere" })
+      const sphereOutline = path({ type: "Sphere" });
       if (sphereOutline) {
         svg
           .append("path")
@@ -161,22 +165,22 @@ export function GlobeToMapTransform() {
           .attr("fill", "none")
           .attr("stroke", "#525252") // Changed sphere outline from cyan to grey
           .attr("stroke-width", 1.5)
-          .attr("opacity", 0.6)
+          .attr("opacity", 0.6);
       }
     } catch (error) {
       // Silent error handling
     }
 
     cities.forEach((city) => {
-      const coords = projection(city.coords as [number, number])
+      const coords = projection(city.coords as [number, number]);
       if (coords) {
-        const [x, y] = coords
+        const [x, y] = coords;
         // Check if the city is on the visible side of the globe
         const distance = geoDistance(
           city.coords as [number, number],
-          projection.invert?.([width / 2, height / 2]) || [0, 0],
-        )
-        const isVisible = distance < Math.PI / 2
+          projection.invert?.([width / 2, height / 2]) || [0, 0]
+        );
+        const isVisible = distance < Math.PI / 2;
 
         if (isVisible) {
           const marker = svg
@@ -187,30 +191,30 @@ export function GlobeToMapTransform() {
             .attr("fill", "#dc2626") // Muted red color (#dc2626)
             .attr("stroke", "#991b1b")
             .attr("stroke-width", 0.5)
-            .attr("opacity", 0.9)
+            .attr("opacity", 0.9);
 
           // Add flashing animation
-          marker
+          (marker as any)
             .transition()
             .duration(800)
             .attr("opacity", 0.2)
             .transition()
             .duration(800)
             .attr("opacity", 0.9)
-            .on("end", function repeat() {
-              select(this)
+            .on("end", function repeat(this: SVGCircleElement) {
+              (select(this) as any)
                 .transition()
                 .duration(800)
                 .attr("opacity", 0.2)
                 .transition()
                 .duration(800)
                 .attr("opacity", 0.9)
-                .on("end", repeat)
-            })
+                .on("end", repeat);
+            });
         }
       }
-    })
-  }, [worldData, rotation])
+    });
+  }, [worldData, rotation]);
 
   return (
     <div className="relative flex items-center justify-center w-full h-full">
@@ -221,5 +225,5 @@ export function GlobeToMapTransform() {
         preserveAspectRatio="xMidYMid meet"
       />
     </div>
-  )
+  );
 }

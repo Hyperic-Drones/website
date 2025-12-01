@@ -1,30 +1,33 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
+import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+import { Space_Grotesk } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+});
 
 export const metadata: Metadata = {
-  title: 'Hyperic',
-  description: 'Fully Autonomous Drones',
-  generator: 'Hyperic',
+  title: "Hyperic",
+  description: "Fully Autonomous Drones",
+  generator: "Hyperic",
   icons: {
-    icon: '/icon.svg',
+    icon: "/icon.svg",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+    <html lang="en" className={`${spaceGrotesk.className}`}>
+      <body>
         {children}
         <Analytics />
       </body>
     </html>
-  )
+  );
 }

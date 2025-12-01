@@ -1,5 +1,5 @@
-import { GlobeToMapTransform } from "@/components/globe-to-map-transform"
-import { DroneVisual } from "@/components/drone-visual"
+import { GlobeToMapTransform } from "@/components/globe-to-map-transform";
+import { DroneVisual } from "@/components/drone-visual";
 
 export default function Demo22Page() {
   return (
@@ -10,7 +10,9 @@ export default function Demo22Page() {
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
           <div className="mb-8 text-center space-y-4">
             {/* Updated headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">Hyperic</h1>
+            <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">
+              Hyperic
+            </h1>
             {/* Updated tagline */}
             <p className="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto">
               Fully autonomous drones for defense and industrials.
@@ -30,28 +32,35 @@ export default function Demo22Page() {
             {/* Left: Text Content */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <h2 className="text-sm font-medium text-neutral-500 uppercase tracking-[0.2em]">About Us</h2>
+                <h2 className="text-sm font-medium text-neutral-500 uppercase tracking-[0.2em]">
+                  About Us
+                </h2>
               </div>
 
               {/* New mission-focused content about North America's unmanned systems history and Hyperic's purpose */}
-              <div className="space-y-6 text-neutral-400 leading-relaxed">
-                <p className="text-lg">
-                  Two decades ago, North America led the world in unmanned systems. We built the platforms, the
-                  components, the research, and the doctrine that defined modern robotics.
+              <div className="space-y-6 text-neutral-400 leading-relaxed text-lg">
+                <p>
+                  Two decades ago, North America led the world in unmanned
+                  systems. We built the platforms, the components, the research,
+                  and the doctrine that defined modern robotics.
                 </p>
                 <p>
-                  Today, we are dependent. We produce almost none of the drones we rely on. China captured over 70
-                  percent of the US market, locking the West into foreign supply chains at the exact moment drones
-                  became central to warfare, intelligence, industry, and emergency response.
+                  Today, we are dependent. We produce almost none of the drones
+                  we rely on. China captured over 70 percent of the US market,
+                  locking the West into foreign supply chains at the exact
+                  moment drones became central to warfare, intelligence,
+                  industry, and emergency response.
                 </p>
                 <p>
-                  Hyperic is here to change that. We are creating scalable drones that can take natural-language
-                  commands, autonomously execute missions, and coordinate as adaptive swarms built for defense,
-                  infrastructure, and industrial operations.
+                  Hyperic is here to change that. We are creating scalable
+                  drones that can take natural-language commands, autonomously
+                  execute missions, and coordinate as adaptive swarms built for
+                  defense, infrastructure, and industrial operations.
                 </p>
                 <p>
-                  We build the full stack: airframes, flight computers, charging infrastructure, and an autonomy layer
-                  capable of running entire swarms with one operator.
+                  We build the full stack: airframes, flight computers, charging
+                  infrastructure, and an autonomy layer capable of running
+                  entire swarms with one operator.
                 </p>
                 <p className="text-white font-medium">
                   No pilots.
@@ -76,20 +85,31 @@ export default function Demo22Page() {
       {/* Footer */}
       <footer className="relative border-t border-neutral-900 py-12 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-neutral-600">© 2025 Hyperic</p>
+          <p className="text-sm text-neutral-600">
+            &copy; {new Date().getFullYear()} Hyperic. All rights reserved.
+          </p>
           <div className="flex gap-6">
-            <a href="#" className="text-sm text-neutral-600 hover:text-neutral-400 transition-colors">
+            <a
+              href="mailto:hello@hyperic.tech"
+              className="text-sm text-neutral-600 hover:text-neutral-400 transition-colors"
+            >
               Contact
             </a>
-            <a href="#" className="text-sm text-neutral-600 hover:text-neutral-400 transition-colors">
+            {/* <a
+              href="#"
+              className="text-sm text-neutral-600 hover:text-neutral-400 transition-colors"
+            >
               Careers
-            </a>
-            <a href="#" className="text-sm text-neutral-600 hover:text-neutral-400 transition-colors">
+            </a> */}
+            {/* <a
+              href="#"
+              className="text-sm text-neutral-600 hover:text-neutral-400 transition-colors"
+            >
               Privacy
-            </a>
+            </a> */}
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
